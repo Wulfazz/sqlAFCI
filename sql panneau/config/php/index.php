@@ -42,7 +42,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
 
     // Page role
 
-    // Suppression d'un rôle
+    //supprimer des données
     if (isset($_GET['deleteRole'])) {
         $idRole = $_GET['deleteRole'];
         $sql = "DELETE FROM role WHERE id_role = :idRole";
@@ -51,6 +51,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
         $stmt->execute();
     }
 
+    //contenu de la page formation
     if (isset($_GET["page"]) && $_GET["page"] == "role"){
 
         $sql = "SELECT * FROM role";
@@ -59,6 +60,8 @@ $pass = "admin"; // Remplacez par votre mot de passe
         $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         ?>
+
+            <!-- Formulaire à remplir -->
             <form method="POST">
                 <h1>Ajout de rôle</h1>
                 <label>Rôle :</label>
@@ -69,7 +72,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
 
         <?php
 
-        // Display the roles in a table
+        // Afficher dans un tableau
         echo '<table border="1">';
         echo '<tr><th>ID</th><th>Nom du rôle</th><th>Actions</th></tr>';
         foreach ($roles as $role) {
@@ -84,6 +87,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
 
     }
 
+    // Bouton enregistrer dans BDD
     if (isset($_POST['submitRole'])){
         $nomRole = $_POST['nomRole'];
 
@@ -96,6 +100,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
 
     // Page centre
 
+    //supprimer des données
     if (isset($_GET['deleteCentre'])) {
         $idCentre = $_GET['deleteCentre'];
         $sql = "DELETE FROM centres WHERE id_centre = :idCentre";
@@ -104,6 +109,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
         $stmt->execute();
     }
     
+    //contenu de la page formation
     if (isset($_GET["page"]) && $_GET["page"] == "centre"){
 
         $sql = "SELECT * FROM centres";
@@ -112,6 +118,8 @@ $pass = "admin"; // Remplacez par votre mot de passe
         $centres = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         ?>
+
+            <!-- Formulaire à remplir -->
             <form method="POST">
                 <h1>Ajout de centre</h1>
                 <label>Ville :</label>
@@ -127,7 +135,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
             </form>
         <?php
 
-        // Display the roles in a table
+        // Afficher dans un tableau
         echo '<table border="1">';
         echo '<tr><th>Ville</th><th>Adresse</th><th>Code Postal</th><th>Actions</th></tr>';
         foreach ($centres as $centre) {
@@ -141,6 +149,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
         echo '</table>';
     }
 
+    // Bouton enregistrer dans BDD
     if (isset($_POST['submitCentre'])){
         $villeCentre = $_POST['villeCentre'];
         $adresseCentre = $_POST['adresseCentre'];
@@ -155,6 +164,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
 
     // Page formation
 
+    //supprimer des données
     if (isset($_GET['deleteFormation'])) {
         $idFormation = $_GET['deleteFormation'];
         $sql = "DELETE FROM formations WHERE id_formation = :idFormation";
@@ -163,6 +173,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
         $stmt->execute();
     }
 
+    //contenu de la page formation
     if (isset($_GET["page"]) && $_GET["page"] == "formation"){
 
         $sql = "SELECT * FROM formations";
@@ -171,6 +182,8 @@ $pass = "admin"; // Remplacez par votre mot de passe
         $formations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         ?>
+
+        <!-- Formulaire à remplir -->
             <form method="POST">
                 <h1>Ajout de formation</h1>
                 <label>Nom de la formation :</label>
@@ -189,15 +202,15 @@ $pass = "admin"; // Remplacez par votre mot de passe
             </form>
         <?php
 
-        // Display the roles in a table
+        // Afficher dans un tableau
         echo '<table border="1">';
         echo '<tr><th>Formation</th><th>Durée</th><th>Niveau de sortie</th><th>Description</th><th>Actions</th></tr>';
-        foreach ($formations as $formations) {
+        foreach ($formations as $formation) {
             echo '<tr>';
-            echo '<td>' . htmlspecialchars($formations['nom_formation']) . '</td>';
-            echo '<td>' . htmlspecialchars($formations['duree_formation']) . '</td>';
-            echo '<td>' . htmlspecialchars($formations['niveau_sortie_formation']) . '</td>';
-            echo '<td>' . htmlspecialchars($formations['description']) . '</td>';
+            echo '<td>' . htmlspecialchars($formation['nom_formation']) . '</td>';
+            echo '<td>' . htmlspecialchars($formation['duree_formation']) . '</td>';
+            echo '<td>' . htmlspecialchars($formation['niveau_sortie_formation']) . '</td>';
+            echo '<td>' . htmlspecialchars($formation['description']) . '</td>';
             echo '<td><a href="?page=formation&deleteFormation=' . $formation['id_formation'] . '" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer cette formation ?\');">Supprimer</a></td>';
             echo '</tr>';
         }
@@ -206,6 +219,7 @@ $pass = "admin"; // Remplacez par votre mot de passe
 
     }
 
+    // Bouton enregistrer dans BDD
     if (isset($_POST['submitFormation'])){
         $nomFormation = $_POST['nomFormation'];
         $dureeFormation = $_POST['dureeFormation'];
