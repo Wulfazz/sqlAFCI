@@ -1,20 +1,23 @@
 <?php
 
-        $sqlRole = "SELECT * FROM role";
-        $requeteRole = $bdd->query($sqlRole);
-        $resultsRole = $requeteRole->fetchAll(PDO::FETCH_ASSOC);
+        $sqlRoles = "SELECT * FROM role";
+        $roles = $bdd->query($sqlRoles)->fetchAll(PDO::FETCH_ASSOC);
         
         ?>
 
-        <!-- Tableau -->
+        <!-- Contenu -->
         <div class="centerDiv">
 
-            <!-- Partie d'ajout de données -->
+            <!-- Formulaire d'ajout de données -->
             <form method="POST">
-                <h1>Ajout de rôle</h1>
+                <h1>Ajout de poste</h1>
 
-                <label for="nomRole">Nom de role :</label>
+                <label for="nomRole">Nom du poste :</label>
+
+                <!-- Barre à remplir, type texte pour préciser qu'il s'agit d'un texte -->
                 <input type="text" name="nomRole">
+
+                <!-- Bouton enregistrer pour entrer le nouveau role -->
                 <input type="submit" name="submitRole" value="Enregistrer">
             </form>
 
@@ -22,19 +25,21 @@
                 <tr>
                     <!-- Noms des colonnes -->
                     <th>ID :</th>
-                    <th>Nom Rôle :</th>
+                    <th>Nom poste :</th>
                     <th>Modifier :</th>
                     <th>Action :</th>
                 </tr>
 
                 <?php
-                // Données à entrer dans le tableau par la base de données
-                foreach ($resultsRole as $roles) {
+                // Données qui vont être dans le tableau d'informations
+                foreach ($roles as $role) {
                     echo '<tr>';
-                    echo '<td>' . ($roles['id_role']) . '</td>';
-                    echo '<td>' . ($roles['nom_role']) . '</td>';
-                    echo '<td><a href="?page=role&type=modifier&id=' . ($roles['id_role']) . '"><button>Modifier</button></a></td>';
-                    echo '<td><a href="?page=role&deleteRole=' . ($roles['id_role']) . '" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce rôle ?\');"><button>Supprimer</button></a></td>';
+                    echo '<td>' . ($role['id_role']) . '</td>';
+                    echo '<td>' . ($role['nom_role']) . '</td>';
+                    // Bouton modifier
+                    echo '<td><a href="?page=role&type=modifier&id=' . ($role['id_role']) . '"><button>Modifier</button></a></td>';
+                    // Bouton supprimer
+                    echo '<td><a href="?page=role&deleteRole=' . ($role['id_role']) . '" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce poste ?\');"><button>Supprimer</button></a></td>';
                     echo '</tr>';
                 }
                 ?>
@@ -46,21 +51,26 @@
         <?php
     
         // Si URL de Type = Modifier (true) avec ID :
-        if (isset($_GET['type']) && $_GET['type'] == "modifier") {
-            $id = $_GET["id"];
-            $sqlId = "SELECT * FROM role WHERE id_role = :id";
-            $requeteId = $bdd->prepare($sqlId);
-            $requeteId->bindParam(':id', $id);
-            $requeteId->execute();
-            $resultsId = $requeteId->fetch(PDO::FETCH_ASSOC);
+        if (isset($_GET['type']) && $_GET['type'] == "modifier" && isset($_GET['id'])) {
+            $idRole = $_GET["id"];
+            $sqlIdRole = "SELECT * FROM role WHERE id_role = :idRole";
+            $stmtIdRole = $bdd->prepare($sqlIdRole);
+
+            $stmtIdRole->bindParam(':idRole', $idRole);
+            $stmtIdRole->execute();
+
+            $resultsIdRole = $stmtIdRole->fetch(PDO::FETCH_ASSOC);
     
             // Formulaire de modification
-            if ($resultsId) {
+            if ($resultsIdRole) {
                 ?>
                 <form method="POST">
-                    <input type="hidden" name="updateIdRole" value="<?php echo ($resultsId['id_role']); ?>">
-                    <input type="text" name="updateNomRole" value="<?php echo ($resultsId['nom_role']); ?>">
-                    <input type="submit" name="updateRole" value="Mise à jour">
+                    <input type="hidden" name="idRole" value="<?php echo ($resultsIdRole['id_role']); ?>">
+
+                    <label>Nom de poste :</label>
+                    <input type="text" name="nomRole" value="<?php echo ($resultsIdRole['nom_role']); ?>">
+
+                    <input type="submit" name="updateRole" value="Mettre à jour">
                 </form>
                 <?php
             }
@@ -68,35 +78,41 @@
     
         if (isset($_POST["updateRole"])) {
             // Valider et changer les données dans la base de données avec le bouton "modifier"
-            $updateIdRole = $_POST["updateIdRole"];
-            $updateNomRole = $_POST["updateNomRole"];
+            $idRole = $_POST["idRole"];
+            $nomRole = $_POST["nomRole"];
     
-            $sqlUpdate = "UPDATE role SET nom_role = :nomRole WHERE id_role = :idRole";
-            $stmtUpdate = $bdd->prepare($sqlUpdate);
-            $stmtUpdate->bindParam(':nomRole', $updateNomRole);
-            $stmtUpdate->bindParam(':idRole', $updateIdRole);
-            $stmtUpdate->execute();
+            // Mettez à jour la base de données
+            $sqlUpdateRole = "UPDATE role SET nom_role = :nomRole WHERE id_role = :idRole";
+            $stmtUpdateRole = $bdd->prepare($sqlUpdateRole);
+
+            $stmtUpdateRole->bindParam(':nomRole', $nomRole);
+            $stmtUpdateRole->bindParam(':idRole', $idRole);
+            $stmtUpdateRole->execute();
     
-            echo "Données modifiées";
+            echo "Nom du poste modifié";
         }
     
         // Suppression de données avec bouton "supprimer"
         if (isset($_GET['deleteRole'])) {
             $idRole = $_GET['deleteRole'];
+
             $sql = "DELETE FROM role WHERE id_role = :idRole";
             $stmt = $bdd->prepare($sql);
-            $stmt->bindParam(':idRole', $idRole);
-            $stmt->execute();
+
+            $stmtDeleteRole->bindParam(':idRole', $idRole);
+            $stmtDeleteRole->execute();
         }
 
         // Ajout de données avec bouton "Ajouter"
         if (isset($_POST['submitRole'])) {
             $nomRole = $_POST['nomRole'];
         
-            $sql = "INSERT INTO role (nom_role) VALUES (:nomRole)";
+            $sql = "INSERT INTO role (nom_role) 
+            VALUES (:nomRole)";
             $stmt = $bdd->prepare($sql);
-            $stmt->bindParam(':nomRole', $nomRole);
-            $stmt->execute();
+
+            $stmtInsertRole->bindParam(':nomRole', $nomRole);
+            $stmtInsertRole->execute();
         
             echo "Role ajouté dans la BDD";
         }

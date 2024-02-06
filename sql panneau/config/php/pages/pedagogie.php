@@ -109,6 +109,7 @@
     
                 $sqlUpdate = "UPDATE pedagogie SET nom_pedagogie = :nomPedagogie, prenom_pedagogie = :prenomPedagogie, mail_pedagogie = :mailPedagogie, num_pedagogie = :numPedagogie  WHERE id_pedagogie = :idPedagogie";
                 $stmtUpdate = $bdd->prepare($sqlUpdate);
+                
                 $stmtUpdate->bindParam(':nomPedagogie', $updateNomPedagogie);
                 $stmtUpdate->bindParam(':prenomPedagogie', $updatePrenomPedagogie);
                 $stmtUpdate->bindParam(':mailPedagogie', $updateMailPedagogie);
@@ -124,6 +125,7 @@
                 $idPedagogie = $_GET['deletePedagogie'];
                 $sqlDelete = "DELETE FROM pedagogie WHERE id_pedagogie = :idPedagogie";
                 $stmtDelete = $bdd->prepare($sqlDelete);
+
                 $stmtDelete->bindParam(':idPedagogie', $idPedagogie);
                 $stmtDelete->execute();
 
@@ -140,6 +142,7 @@
 
             $sqlInsert = "INSERT INTO pedagogie (nom_pedagogie, prenom_pedagogie, mail_pedagogie, num_pedagogie, id_role) VALUES (:nomPedagogie, :prenomPedagogie, :mailPedagogie, :numPedagogie, :idRole)";
             $stmtInsert = $bdd->prepare($sqlInsert);
+
             $stmtInsert->bindParam(':nomPedagogie', $nomPedagogie);
             $stmtInsert->bindParam(':prenomPedagogie', $prenomPedagogie);
             $stmtInsert->bindParam(':mailPedagogie', $mailPedagogie);

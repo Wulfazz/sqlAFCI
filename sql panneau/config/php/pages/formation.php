@@ -91,6 +91,7 @@
 
             $sqlUpdate = "UPDATE formations SET nom_formation = :nomFormation, duree_formation = :dureeFormation, niveau_sortie_formation = :niveauFormation, `description` = :descFormation  WHERE id_formation = :idFormation";
             $stmtUpdate = $bdd->prepare($sqlUpdate);
+
             $stmtUpdate->bindParam(':nomFormation', $updateNomFormation);
             $stmtUpdate->bindParam(':dureeFormation', $updateDureeFormation);
             $stmtUpdate->bindParam(':niveauFormation', $updateNiveauFormation);
@@ -98,7 +99,7 @@
             $stmtUpdate->bindParam(':idFormation', $updateIdFormation);
             $stmtUpdate->execute();
         
-            echo "Données modifiées";
+            echo "Données de formation mises à jour";
         }
 
         //suppression de données avec bouton "supprimer"
@@ -117,11 +118,15 @@
             $niveauFormation = $_POST['niveauFormation'];
             $descFormation = $_POST['descFormation'];
 
-            $sql = "INSERT INTO `formations`(`nom_formation`, `duree_formation`, `niveau_sortie_formation`, `description`) 
-            VALUES ('$nomFormation','$dureeFormation','$niveauFormation','$descFormation')";
-            $bdd->query($sql);
+            $sql = "INSERT INTO formations (nom_formation, duree_formation, niveau_sortie_formation, description) VALUES (:nomFormation, :dureeFormation, :niveauFormation, :descFormation)";
+            $stmt = $bdd->prepare($sql);
+            $stmt->bindParam(':nomFormation', $nomFormation);
+            $stmt->bindParam(':dureeFormation', $dureeFormation);
+            $stmt->bindParam(':niveauFormation', $niveauFormation);
+            $stmt->bindParam(':descFormation', $descFormation);
+            $stmt->execute();
 
-            echo "data ajoutée dans la bdd";
+            echo "Formation ajoutée dans la BDD";
         }
 
 ?>

@@ -6,10 +6,10 @@
 
         ?>
 
-        <!-- Tableau -->
+        <!-- Contenu -->
         <div class="centerDiv">
 
-            <!-- Partie d'ajout de données -->
+            <!-- Formulaire d'ajout de données -->
             <form method="POST">
                 <h1>Ajout de centre</h1>
                 <label>Ville :</label>
@@ -35,7 +35,7 @@
                 </tr>
 
                 <?php
-                //Données à entrer dans le tableau par la base de données
+                //Données dans le tableau
                 foreach($resultsCentre as $centres){
                     echo '<tr>';
                     echo '<td>' . ($centres['ville_centre']) . '</td>';
@@ -70,7 +70,7 @@
                     <input type="text" name="updateVilleCentre" value="<?php echo ($resultsId['ville_centre']); ?>">
                     <input type="text" name="updateAdresseCentre" value="<?php echo ($resultsId['adresse_centre']); ?>">
                     <input type="text" name="updateCpCentre" value="<?php echo ($resultsId['code_postal_centre']); ?>">
-                    <input type="submit" name="updateCentre" value="Mise à jour">
+                    <input type="submit" name="updateCentre" value="Mettre à jour">
                 </form>
                 <?php
             }
@@ -86,6 +86,7 @@
         
             $sqlUpdate = "UPDATE centres SET ville_centre = :villeCentre, adresse_centre = :adresseCentre, code_postal_centre = :cpCentre WHERE id_centre = :idCentre";
             $stmtUpdate = $bdd->prepare($sqlUpdate);
+            
             $stmtUpdate->bindParam(':villeCentre', $updateVilleCentre);
             $stmtUpdate->bindParam(':adresseCentre', $updateAdresseCentre);
             $stmtUpdate->bindParam(':cpCentre', $updateCpCentre);
@@ -100,6 +101,7 @@
             $idCentre = $_GET['deleteCentre'];
             $sql = "DELETE FROM centres WHERE id_centre = :idCentre";
             $stmt = $bdd->prepare($sql);
+
             $stmt->bindParam(':idCentre', $idCentre);
             $stmt->execute();
         }
@@ -112,10 +114,15 @@
             $cpCentre = $_POST['cpCentre'];
 
             $sql = "INSERT INTO `centres`(`ville_centre`, `adresse_centre`, `code_postal_centre`) 
-            VALUES ('$villeCentre','$adresseCentre','$cpCentre')";
-            $bdd->query($sql);
+            VALUES (:villeCentre, :adresseCentre, :cpCentre)";
+            $stmt = $bdd->prepare($sql);
+   
+            $stmt->bindParam(':villeCentre', $villeCentre);
+            $stmt->bindParam(':adresseCentre', $adresseCentre);
+            $stmt->bindParam(':cpCentre', $cpCentre);
+            $stmt->execute();
 
-            echo "data ajoutée dans la bdd";
+            echo "Centre ajouté dans la bdd";
         }
 
 ?>

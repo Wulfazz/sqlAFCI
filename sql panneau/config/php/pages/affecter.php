@@ -1,6 +1,5 @@
 <?php
 
-
     // Récupération des informations pour les menus déroulants
     $sqlCentres = "SELECT * FROM centres";
     $centres = $bdd->query($sqlCentres)->fetchAll(PDO::FETCH_ASSOC);
@@ -78,9 +77,12 @@
 
         $sqlInsert = "INSERT INTO affecter (id_centre, id_pedagogie) VALUES (:idCentre, :idPedagogie)";
         $stmtInsert = $bdd->prepare($sqlInsert);
-        $stmtInsert->execute([':idCentre' => $idCentre, ':idPedagogie' => $idPedagogie]);
 
-        echo "<p class='success'>Affectation ajoutée avec succès.</p>";
+        $stmtInsert->bindParam(':idCentre', $idCentre);
+        $stmtInsert->bindParam(':idPedagogie', $idPedagogie);
+        $stmtInsert->execute();
+
+        echo "Affectation ajoutée avec succès";
     }
 
     if (isset($_GET['delete'], $_GET['idCentre'], $_GET['idPedagogie'])) {
@@ -89,7 +91,10 @@
 
         $sqlDelete = "DELETE FROM affecter WHERE id_centre = :idCentre AND id_pedagogie = :idPedagogie";
         $stmtDelete = $bdd->prepare($sqlDelete);
-        $success = $stmtDelete->execute([':idCentre' => $idCentre, ':idPedagogie' => $idPedagogie]);
+       
+        $stmtDelete->bindParam(':idCentre', $idCentre);
+        $stmtDelete->bindParam(':idPedagogie', $idPedagogie);
+        $stmtDelete->execute();
     }
 
 
@@ -121,21 +126,22 @@
     }
 
     if (isset($_POST['action']) && $_POST['action'] == 'updateAffectation') {
-        $idCentre = $_POST['idCentre'];
-        $idPedagogie = $_POST['idPedagogie'];
+        $newIdCentre = $_POST['idCentre'];
+        $newIdPedagogie = $_POST['idPedagogie'];
+        $oldIdCentre = $_GET['idCentre'];
+        $oldIdPedagogie = $_GET['idPedagogie'];
     
         // Effectuez la mise à jour
         $sqlUpdate = "UPDATE affecter SET id_centre = :newIdCentre, id_pedagogie = :newIdPedagogie WHERE id_centre = :oldIdCentre AND id_pedagogie = :oldIdPedagogie";
         $stmtUpdate = $bdd->prepare($sqlUpdate);
-        $stmtUpdate->execute([
-            ':newIdCentre' => $idCentre,
-            ':newIdPedagogie' => $idPedagogie,
-            ':oldIdCentre' => $_GET['idCentre'],
-            ':oldIdPedagogie' => $_GET['idPedagogie']
-        ]);
-    
-        echo "<p>Mise à jour effectuée avec succès.</p>";
-    }
 
+        $stmtUpdate->bindParam(':newIdCentre', $newIdCentre);
+        $stmtUpdate->bindParam(':newIdPedagogie', $newIdPedagogie);
+        $stmtUpdate->bindParam(':oldIdCentre', $oldIdCentre);
+        $stmtUpdate->bindParam(':oldIdPedagogie', $oldIdPedagogie);
+        $stmtUpdate->execute();
+    
+        echo "Mise à jour effectuée avec succès";
+    }
 
 ?>

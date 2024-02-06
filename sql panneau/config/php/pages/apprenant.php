@@ -16,48 +16,48 @@
     
         ?>
 
-        <!-- Tableau -->
+        <!-- Contenu -->
         <div class="centerDiv">
 
-            <!-- Partie d'ajout de données -->
+            <!-- Formulaire d'ajout de données -->
             <form method="POST">
                 <h1>Ajout d'un apprenant</h1>
                 <label>Nom :</label>
                 <input type="text" name="nomApprenant">
-                <br>
+                
                 <label>Prenom :</label>
                 <input type="text" name="prenomApprenant">
-                <br>
+                
                 <label>Mail :</label>
                 <input type="text" name="mailApprenant">
-                <br>
+                
                 <label>Adresse :</label>
                 <input type="text" name="adresseApprenant">
-                <br>
+                
                 <label>Ville :</label>
                 <input type="text" name="villeApprenant">
-                <br>
+                
                 <label>Code postal :</label>
                 <input type="text" name="cpApprenant">
-                <br>
+                
                 <label>Téléphone :</label>
                 <input type="text" name="telApprenant">
-                <br>
+                
                 <label>Date de naissance :</label>
                 <input type="text" name="naissanceApprenant">
-                <br>
+                
                 <label>Diplome :</label>
                 <input type="text" name="nivApprenant">
-                <br>
+                
                 <label>Pole emploi :</label>
                 <input type="text" name="peApprenant">
-                <br>
+                
                 <label>Numéro de sécurité sociale :</label>
                 <input type="text" name="secuApprenant">
-                <br>
+                
                 <label>RIB :</label>
                 <input type="text" name="ribApprenant">
-                <br>
+                
 
                 <label>Role :</label>
                 <select name="idRoleAp" id="">
@@ -69,7 +69,6 @@
                     ?>
 
                 </select>
-                <br>
 
                 <label>Session :</label>
                 <select name="idSession">
@@ -80,7 +79,7 @@
                     } 
                     ?>
 
-                </select><br>
+                </select>
 
                 <input type="submit" name="submitApprenant" value="Enregistrer">
             </form>
@@ -131,34 +130,35 @@
                 $sqlIdApprenant = "SELECT * FROM apprenants WHERE id_apprenant = :idApprenant";
                 $stmtIdApprenant = $bdd->prepare($sqlIdApprenant);
                 $stmtIdApprenant->execute([':idApprenant' => $idApprenant]);
-                $apprenantDetails = $stmtIdApprenant->fetch(PDO::FETCH_ASSOC);
+                $resultsIdApprenant = $stmtIdApprenant->fetch(PDO::FETCH_ASSOC);
 
-                if ($apprenantDetails) {
+                if ($resultsIdApprenant) {
                     // Affichez le formulaire de mise à jour avec les informations de l'apprenant pré-remplies
                     ?>
                     <form method="POST">
-                        <input type="hidden" name="idApprenant" value="<?php echo ($apprenantDetails['id_apprenant']); ?>">
+                        <input type="hidden" name="idApprenant" value="<?php echo ($resultsIdApprenant['id_apprenant']); ?>">
+                        
                         <label>Nom :</label>
-                        <input type="text" name="nomApprenant" value="<?php echo ($apprenantDetails['nom_apprenant']); ?>">
-                        <br>
+                        <input type="text" name="nomApprenant" value="<?php echo ($resultsIdApprenant['nom_apprenant']); ?>">
+                        
                         <label>Prenom :</label>
-                        <input type="text" name="prenomApprenant" value="<?php echo ($apprenantDetails['prenom_apprenant']); ?>">
-                        <br>
+                        <input type="text" name="prenomApprenant" value="<?php echo ($resultsIdApprenant['prenom_apprenant']); ?>">
+                        
                         <label>Mail :</label>
-                        <input type="text" name="mailApprenant" value="<?php echo ($apprenantDetails['mail_apprenant']); ?>">
-                        <br>
+                        <input type="text" name="mailApprenant" value="<?php echo ($resultsIdApprenant['mail_apprenant']); ?>">
+                        
                         <label>Adresse :</label>
-                        <input type="text" name="adresseApprenant" value="<?php echo ($apprenantDetails['adresse_apprenant']); ?>">
-                        <br>
+                        <input type="text" name="adresseApprenant" value="<?php echo ($resultsIdApprenant['adresse_apprenant']); ?>">
+                        
                         <label>Ville :</label>
-                        <input type="text" name="villeApprenant" value="<?php echo ($apprenantDetails['ville_apprenant']); ?>">
-                        <br>
+                        <input type="text" name="villeApprenant" value="<?php echo ($resultsIdApprenant['ville_apprenant']); ?>">
+                        
                         <label>Code postal :</label>
-                        <input type="text" name="cpApprenant" value="<?php echo ($apprenantDetails['code_postal_apprenant']); ?>">
-                        <br>
+                        <input type="text" name="cpApprenant" value="<?php echo ($resultsIdApprenant['code_postal_apprenant']); ?>">
+                        
                         <label>Téléphone</label>
-                        <input type="text" name="numApprenant" value="<?php echo ($apprenantDetails['tel_apprenant']); ?>">
-                        <br>
+                        <input type="text" name="numApprenant" value="<?php echo ($resultsIdApprenant['tel_apprenant']); ?>">
+                        
                         <!-- Ajoutez d'autres champs ici si nécessaire -->
                         <input type="submit" name="updateApprenant" value="Mettre à jour">
                     </form>
@@ -180,16 +180,16 @@
                 // Mettez à jour la base de données
                 $sqlUpdateApprenant = "UPDATE apprenants SET nom_apprenant = :nomApprenant, prenom_apprenant = :prenomApprenant, mail_apprenant = :mailApprenant, adresse_apprenant = :adresseApprenant, ville_apprenant = :villeApprenant, code_postal_apprenant = :cpApprenant, tel_apprenant = :numApprenant WHERE id_apprenant = :idApprenant";
                 $stmtUpdateApprenant = $bdd->prepare($sqlUpdateApprenant);
-                $stmtUpdateApprenant->execute([
-                    ':nomApprenant' => $nomApprenant,
-                    ':prenomApprenant' => $prenomApprenant,
-                    ':mailApprenant' => $mailApprenant,
-                    ':adresseApprenant' => $adresseApprenant,
-                    ':villeApprenant' => $villeApprenant,
-                    ':cpApprenant' => $cpApprenant,       
-                    ':numApprenant' => $numApprenant,
-                    ':idApprenant' => $idApprenant
-                ]);
+
+                $stmtUpdateApprenant->bindParam(':nomApprenant', $nomApprenant);
+                $stmtUpdateApprenant->bindParam(':prenomApprenant', $prenomApprenant);
+                $stmtUpdateApprenant->bindParam(':mailApprenant', $mailApprenant);
+                $stmtUpdateApprenant->bindParam(':adresseApprenant', $adresseApprenant);
+                $stmtUpdateApprenant->bindParam(':villeApprenant', $villeApprenant);
+                $stmtUpdateApprenant->bindParam(':cpApprenant', $cpApprenant);
+                $stmtUpdateApprenant->bindParam(':numApprenant', $numApprenant);
+                $stmtUpdateApprenant->bindParam(':idApprenant', $idApprenant);
+                $stmtUpdateApprenant->execute();
             
                 echo "Informations de l'apprenant mises à jour avec succès.";
             }
@@ -217,24 +217,24 @@
                 $sqlInsert = "INSERT INTO apprenants (nom_apprenant, prenom_apprenant, mail_apprenant, adresse_apprenant, ville_apprenant, code_postal_apprenant, tel_apprenant, date_naissance_apprenant, niveau_apprenant, num_PE_apprenant, num_secu_apprenant, rib_apprenant, id_role, id_session) 
                             VALUES (:nomApprenant, :prenomApprenant, :mailApprenant, :adresseApprenant, :villeApprenant, :cpApprenant, :telApprenant, :naissanceApprenant, :nivApprenant, :peApprenant, :secuApprenant, :ribApprenant, :idRole, :idSession)";
                 $stmtInsert = $bdd->prepare($sqlInsert);
-                $stmtInsert->execute([
-                    ':nomApprenant' => $nomApprenant,
-                    ':prenomApprenant' => $prenomApprenant,
-                    ':mailApprenant' => $mailApprenant,
-                    ':adresseApprenant' => $_POST['adresseApprenant'],
-                    ':villeApprenant' => $_POST['villeApprenant'],
-                    ':cpApprenant' => $_POST['cpApprenant'],
-                    ':telApprenant' => $_POST['telApprenant'],
-                    ':naissanceApprenant' => $_POST['naissanceApprenant'],
-                    ':nivApprenant' => $_POST['nivApprenant'],
-                    ':peApprenant' => $_POST['peApprenant'],
-                    ':secuApprenant' => $_POST['secuApprenant'],
-                    ':ribApprenant' => $_POST['ribApprenant'],
-                    ':idRole' => $idRole,
-                    ':idSession' => $idSession
-                ]);
 
-                echo "<p>Apprenant ajouté avec succès.</p>";
+                $stmtInsert->bindParam(':nomApprenant', $nomApprenant);
+                $stmtInsert->bindParam(':prenomApprenant', $prenomApprenant);
+                $stmtInsert->bindParam(':mailApprenant', $mailApprenant);
+                $stmtInsert->bindParam(':adresseApprenant', $adresseApprenant);
+                $stmtInsert->bindParam(':villeApprenant', $villeApprenant);
+                $stmtInsert->bindParam(':cpApprenant', $cpApprenant);
+                $stmtInsert->bindParam(':telApprenant', $telApprenant);
+                $stmtInsert->bindParam(':naissanceApprenant', $naissanceApprenant);
+                $stmtInsert->bindParam(':nivApprenant', $nivApprenant);
+                $stmtInsert->bindParam(':peApprenant', $peApprenant);
+                $stmtInsert->bindParam(':secuApprenant', $secuApprenant);
+                $stmtInsert->bindParam(':ribApprenant', $ribApprenant);
+                $stmtInsert->bindParam(':idRole', $idRoleAp);
+                $stmtInsert->bindParam(':idSession', $idSession);
+                $stmtInsert->execute();
+
+                echo "Apprenant ajouté avec succès";
             }
 
 ?>
