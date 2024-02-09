@@ -8,44 +8,35 @@
     $pedagogies = $bdd->query($sqlPedagogie)->fetchAll(PDO::FETCH_ASSOC);
 
     // Affichage des affectations existantes
-    $sqlAffecter = "SELECT * FROM affecter";
-    $affectations = $bdd->query($sqlAffecter)->fetchAll(PDO::FETCH_ASSOC);
-
-    // Affichage des affectations existantes
     $sqlAffecter = "SELECT a.id_centre, a.id_pedagogie, c.ville_centre, p.nom_pedagogie 
-    FROM affecter a
-    JOIN centres c ON a.id_centre = c.id_centre
-    JOIN pedagogie p ON a.id_pedagogie = p.id_pedagogie";
+                    FROM affecter a
+                    JOIN centres c ON a.id_centre = c.id_centre
+                    JOIN pedagogie p ON a.id_pedagogie = p.id_pedagogie";
     $affectations = $bdd->query($sqlAffecter)->fetchAll(PDO::FETCH_ASSOC);
 
-    // Affichage du formulaire d'ajout d'affectation
-    ?>
-    <div class="centerDiv">
-        <form method="POST">
-            <h1>Ajout d'affectation</h1>
-            <label>Centre :</label>
-            <select name="idCentre">
+?>
 
-                <?php foreach ($centres as $centre) {
-                    echo "<option value='{$centre['id_centre']}'>{$centre['ville_centre']}</option>";
-                } 
-                ?>
+<div class="centerDiv">
 
-            </select>
-            <br>
-            <label>Équipe pédagogique :</label>
-            <select name="idPedagogie">
+    <form method="POST">
+        <h1>Ajout d'affectation</h1>
+        <label>Centre :</label>
+        <select name="idCentre">
+            <?php foreach ($centres as $centre) {
+                echo "<option value='".htmlspecialchars($centre['id_centre'])."'>".htmlspecialchars($centre['ville_centre'])."</option>";
+            } ?>
+        </select>
+        <br>
+        <label>Équipe pédagogique :</label>
+        <select name="idPedagogie">
+            <?php foreach ($pedagogies as $pedagogie) {
+                echo "<option value='".htmlspecialchars($pedagogie['id_pedagogie'])."'>".htmlspecialchars($pedagogie['nom_pedagogie'])."</option>";
+            } ?>
+        </select>
+        <br>
+        <input type="submit" name="submitAffecter" value="Enregistrer">
+    </form>
 
-                <?php foreach ($pedagogies as $pedagogie) {
-                    echo "<option value='{$pedagogie['id_pedagogie']}'>{$pedagogie['nom_pedagogie']}</option>";
-                } 
-                ?>
-
-            </select>
-            <br>
-            <input type="submit" name="submitAffecter" value="Enregistrer">
-        </form>
-    
     <table border="1">
 
         <tr>
@@ -57,19 +48,19 @@
 
         <?php foreach ($affectations as $affectation) { 
             echo '<tr>';
-            echo '<td>' . ($affectation['ville_centre']) . '</td>';
-            echo '<td>' . ($affectation['nom_pedagogie']) . '</td>';
-            echo '<td><a href="?page=affecter&action=edit&idCentre=' . $affectation['id_centre'] . '&idPedagogie=' . $affectation['id_pedagogie'] . '"><button>Modifier</button></a></td>';
-            echo '<td><a href="?page=affecter&delete&idCentre=' . $affectation['id_centre'] . '&idPedagogie=' . $affectation['id_pedagogie'] . '" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer cette affectation ?\');"><button>Supprimer</button></a></td>';
+            echo '<td>' . htmlspecialchars($affectation['ville_centre']) . '</td>';
+            echo '<td>' . htmlspecialchars($affectation['nom_pedagogie']) . '</td>';
+            echo '<td><a href="?page=affecter&action=edit&idCentre=' . htmlspecialchars($affectation['id_centre']) . '&idPedagogie=' . htmlspecialchars($affectation['id_pedagogie']) . '"><button>Modifier</button></a></td>';
+            echo '<td><a href="?page=affecter&delete&idCentre=' . htmlspecialchars($affectation['id_centre']) . '&idPedagogie=' . htmlspecialchars($affectation['id_pedagogie']) . '" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer cette affectation ?\');"><button>Supprimer</button></a></td>';
             echo '</tr>';
-         } ?>
+         } 
+         ?>
 
     </table>
 
 </div>
 
-    <?php
-
+<?php
     // Traitement de l'ajout d'une nouvelle affectation
     if (isset($_POST['submitAffecter'])) {
         $idCentre = $_POST['idCentre'];
@@ -109,7 +100,7 @@
         echo "<select name='idCentre'>";
         foreach ($centres as $centre) {
             $selected = ($centre['id_centre'] == $_GET['idCentre']) ? "selected" : "";
-            echo "<option value='{$centre['id_centre']}' {$selected}>{$centre['ville_centre']}</option>";
+            echo "<option value='".htmlspecialchars($centre['id_centre'])."' ".htmlspecialchars($selected).">".htmlspecialchars($centre['ville_centre'])."</option>";
         }
         echo "</select>";
     
@@ -117,7 +108,7 @@
         echo "<select name='idPedagogie'>";
         foreach ($pedagogies as $pedagogie) {
             $selected = ($pedagogie['id_pedagogie'] == $_GET['idPedagogie']) ? "selected" : "";
-            echo "<option value='{$pedagogie['id_pedagogie']}' {$selected}>{$pedagogie['nom_pedagogie']}</option>";
+            echo "<option value='".htmlspecialchars($pedagogie['id_pedagogie'])."' ".htmlspecialchars($selected).">".htmlspecialchars($pedagogie['nom_pedagogie'])."</option>";
         }
         echo "</select>";
     
