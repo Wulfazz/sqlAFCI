@@ -10,6 +10,7 @@
             <li><a href="?page=apprenant">Apprenant</li></a>
             <li><a href="?page=affecter">Affectation</a></li>
             <li><a href="?page=login">Connexion</a></li>
+            <li><a href="?exo=poo"></a>Exo</li>
         </ul>
     </nav>
 </header>

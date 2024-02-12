@@ -1,7 +1,7 @@
 <?php
 
-    $sqlUsers = "SELECT * FROM users";
-    $users = $bdd->query($sqlUsers)->fetchAll(PDO::FETCH_ASSOC);
+    include("function.php");
+    $users = selectAll("users");
 
 ?>
 
@@ -21,8 +21,6 @@
 <?php
 
     if (isset($_POST['submitUser'])) {
-        $identifiantNU = $_POST['identifiantNU'];
-        $passwordNU = $_POST['passwordNU'];
 
         //Pour crypter le mot de passe
         $hash = password_hash($passwordNU, PASSWORD_DEFAULT);
@@ -30,8 +28,8 @@
         $sql = "INSERT INTO users (identifiant, password) VALUES (:identifiantNU, :hash)";
         $stmt = $bdd->prepare($sql);
 
-        $stmt->bindParam(':identifiantNU', $identifiantNU);
-        $stmt->bindParam(':hash', $hash);
+        $stmt->bindParam(':identifiantNU', $_POST['identifiantNU']);
+        $stmt->bindParam(':hash', $_POST['hash']);
         $stmt->execute();
 
         echo "Inscription faite";
@@ -58,14 +56,12 @@
     
         $identifiantConnect = $_POST['identifiantConnect'];
         $passwordConnect = $_POST['passwordConnect'];
-
         
         $sql = "SELECT * FROM users WHERE identifiant = :identifiantConnect";
         $stmt = $bdd->prepare($sql);
         $stmt->bindParam(':identifiantConnect', $identifiantConnect);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
         
         if ($user) {
             

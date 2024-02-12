@@ -1,11 +1,9 @@
 <?php
 
     // Récupération des informations pour les menus déroulants
-    $sqlCentres = "SELECT * FROM centres";
-    $centres = $bdd->query($sqlCentres)->fetchAll(PDO::FETCH_ASSOC);
-
-    $sqlPedagogie = "SELECT * FROM pedagogie";
-    $pedagogies = $bdd->query($sqlPedagogie)->fetchAll(PDO::FETCH_ASSOC);
+    include("function.php");
+    $centres = selectAll("centres");
+    $pedagogies = selectAll("pedagogie");
 
     // Affichage des affectations existantes
     $sqlAffecter = "SELECT a.id_centre, a.id_pedagogie, c.ville_centre, p.nom_pedagogie 
@@ -22,16 +20,20 @@
         <h1>Ajout d'affectation</h1>
         <label>Centre :</label>
         <select name="idCentre">
+
             <?php foreach ($centres as $centre) {
                 echo "<option value='".htmlspecialchars($centre['id_centre'])."'>".htmlspecialchars($centre['ville_centre'])."</option>";
             } ?>
+
         </select>
         <br>
         <label>Équipe pédagogique :</label>
         <select name="idPedagogie">
+
             <?php foreach ($pedagogies as $pedagogie) {
                 echo "<option value='".htmlspecialchars($pedagogie['id_pedagogie'])."'>".htmlspecialchars($pedagogie['nom_pedagogie'])."</option>";
             } ?>
+
         </select>
         <br>
         <input type="submit" name="submitAffecter" value="Enregistrer">
@@ -63,14 +65,12 @@
 <?php
     // Traitement de l'ajout d'une nouvelle affectation
     if (isset($_POST['submitAffecter'])) {
-        $idCentre = $_POST['idCentre'];
-        $idPedagogie = $_POST['idPedagogie'];
 
         $sqlInsert = "INSERT INTO affecter (id_centre, id_pedagogie) VALUES (:idCentre, :idPedagogie)";
         $stmtInsert = $bdd->prepare($sqlInsert);
 
-        $stmtInsert->bindParam(':idCentre', $idCentre);
-        $stmtInsert->bindParam(':idPedagogie', $idPedagogie);
+        $stmtInsert->bindParam(':idCentre', $_POST['idCentre']);
+        $stmtInsert->bindParam(':idPedagogie', $_POST['idPedagogie']);
         $stmtInsert->execute();
 
         echo "Affectation ajoutée avec succès";
@@ -98,18 +98,23 @@
     
         // Sélectionner le centre actuel
         echo "<select name='idCentre'>";
+
         foreach ($centres as $centre) {
+
             $selected = ($centre['id_centre'] == $_GET['idCentre']) ? "selected" : "";
             echo "<option value='".htmlspecialchars($centre['id_centre'])."' ".htmlspecialchars($selected).">".htmlspecialchars($centre['ville_centre'])."</option>";
         }
+
         echo "</select>";
     
         // Sélectionner l'équipe pédagogique actuelle
         echo "<select name='idPedagogie'>";
+
         foreach ($pedagogies as $pedagogie) {
             $selected = ($pedagogie['id_pedagogie'] == $_GET['idPedagogie']) ? "selected" : "";
             echo "<option value='".htmlspecialchars($pedagogie['id_pedagogie'])."' ".htmlspecialchars($selected).">".htmlspecialchars($pedagogie['nom_pedagogie'])."</option>";
         }
+
         echo "</select>";
     
         echo "<input type='submit' value='Mettre à jour'>";

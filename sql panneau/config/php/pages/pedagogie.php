@@ -1,13 +1,8 @@
 <?php
 
-    $sqlRole = "SELECT * FROM role";
-    $requeteRole = $bdd->query($sqlRole);
-    $resultsRole = $requeteRole->fetchAll(PDO::FETCH_ASSOC);
-
-    $sqlPedagogie = "SELECT * FROM pedagogie";
-    $requetePedagogie = $bdd->prepare($sqlPedagogie);
-    $requetePedagogie->execute();
-    $resultsPedagogie = $requetePedagogie->fetchAll(PDO::FETCH_ASSOC);
+    include("function.php");
+    $resultsRole = selectAll("role");
+    $resultsPedagogie = selectAll("pedagogie");
 
 ?>
 
@@ -75,75 +70,71 @@
 <?php
 
     // Si URL de type = modifier (true) avec ID :
-        if(isset($_GET['type']) && $_GET['type'] == "modifier") {
-            $id = $_GET["id"];
-            $sqlId = "SELECT * FROM pedagogie WHERE id_pedagogie = :id";
-            $requeteId = $bdd->prepare($sqlId);
-            $requeteId->bindParam(':id', $id);
-            $requeteId->execute();
-            $resultsId = $requeteId->fetch(PDO::FETCH_ASSOC);
+    if(isset($_GET['type']) && $_GET['type'] == "modifier") {
+        $id = $_GET["id"];
+        $sqlId = "SELECT * FROM pedagogie WHERE id_pedagogie = :id";
+        $requeteId = $bdd->prepare($sqlId);
+        $requeteId->bindParam(':id', $id);
+        $requeteId->execute();
+        $resultsId = $requeteId->fetch(PDO::FETCH_ASSOC);
 
-                //Formulaire de modification
-                if ($resultsId){
-                    ?>
-                    <form method="POST">
-                        <input type="hidden" name="updateIdPedagogie" value="<?php echo htmlspecialchars($resultsId['id_pedagogie']); ?>">
-                        <input type="text" name="updateNomPedagogie" value="<?php echo htmlspecialchars($resultsId['nom_pedagogie']); ?>">
-                        <input type="text" name="updatePrenomPedagogie" value="<?php echo htmlspecialchars($resultsId['prenom_pedagogie']); ?>">
-                        <input type="text" name="updateMailPedagogie" value="<?php echo htmlspecialchars($resultsId['mail_pedagogie']); ?>">
-                        <input type="text" name="updateNumPedagogie" value="<?php echo htmlspecialchars($resultsId['num_pedagogie']); ?>">
-                        <input type="submit" name="updatePedagogie" value="Mise à jour">
-                    </form>
-                    <?php
-                }
-        }
-
-        if (isset($_POST["updatePedagogie"])){
-            //valider et changer les données dans la bdd avec le bouton "modifier"
-            $updateIdPedagogie = $_POST["updateIdPedagogie"];
-            $updateNomPedagogie = $_POST["updateNomPedagogie"];
-            $updatePrenomPedagogie = $_POST["updatePrenomPedagogie"];
-            $updateMailPedagogie = $_POST["updateMailPedagogie"];
-            $updateNumPedagogie = $_POST["updateNumPedagogie"];
-
-            $sqlUpdate = "UPDATE pedagogie SET nom_pedagogie = :nomPedagogie, prenom_pedagogie = :prenomPedagogie, mail_pedagogie = :mailPedagogie, num_pedagogie = :numPedagogie  WHERE id_pedagogie = :idPedagogie";
-            $stmtUpdate = $bdd->prepare($sqlUpdate);
+            //Formulaire de modification
+            if ($resultsId){
+                ?>
+                <form method="POST">
+                    <input type="hidden" name="updateIdPedagogie" value="<?php echo htmlspecialchars($resultsId['id_pedagogie']); ?>">
+                    <input type="text" name="updateNomPedagogie" value="<?php echo htmlspecialchars($resultsId['nom_pedagogie']); ?>">
+                    <input type="text" name="updatePrenomPedagogie" value="<?php echo htmlspecialchars($resultsId['prenom_pedagogie']); ?>">
+                    <input type="text" name="updateMailPedagogie" value="<?php echo htmlspecialchars($resultsId['mail_pedagogie']); ?>">
+                    <input type="text" name="updateNumPedagogie" value="<?php echo htmlspecialchars($resultsId['num_pedagogie']); ?>">
+                    <input type="submit" name="updatePedagogie" value="Mise à jour">
+                </form>
+                <?php
+            }
             
-            $stmtUpdate->bindParam(':nomPedagogie', $updateNomPedagogie);
-            $stmtUpdate->bindParam(':prenomPedagogie', $updatePrenomPedagogie);
-            $stmtUpdate->bindParam(':mailPedagogie', $updateMailPedagogie);
-            $stmtUpdate->bindParam(':numPedagogie', $updateNumPedagogie);
-            $stmtUpdate->bindParam(':idPedagogie', $updateIdPedagogie);
-            $stmtUpdate->execute();
+    }
+    if (isset($_POST["updatePedagogie"])){
         
-            echo "Données modifiées";
-        }
+        //valider et changer les données dans la bdd avec le bouton "modifier"
+        $sqlUpdate = "UPDATE pedagogie SET nom_pedagogie = :nomPedagogie, prenom_pedagogie = :prenomPedagogie, mail_pedagogie = :mailPedagogie, num_pedagogie = :numPedagogie  WHERE id_pedagogie = :idPedagogie";
+        $stmtUpdate = $bdd->prepare($sqlUpdate);
+        
+        $stmtUpdate->bindParam(':nomPedagogie', $_POST["updateNomPedagogie"]);
+        $stmtUpdate->bindParam(':prenomPedagogie', $_POST["updatePrenomPedagogie"]);
+        $stmtUpdate->bindParam(':mailPedagogie', $_POST["updateMailPedagogie"]);
+        $stmtUpdate->bindParam(':numPedagogie', $_POST["updateNumPedagogie"]);
+        $stmtUpdate->bindParam(':idPedagogie', $_POST["updateIdPedagogie"]);
+        $stmtUpdate->execute();
+    
+        echo "Données modifiées";
+    }
+    
+    // Suppression de données avec bouton "supprimer"
+    if(isset($_GET['deletePedagogie'])) {
 
-        // Suppression de données avec bouton "supprimer"
-        if(isset($_GET['deletePedagogie'])) {
-            $idPedagogie = $_GET['deletePedagogie'];
-            $sqlDelete = "DELETE FROM pedagogie WHERE id_pedagogie = :idPedagogie";
-            $stmtDelete = $bdd->prepare($sqlDelete);
-            $stmtDelete->bindParam(':idPedagogie', $idPedagogie);
-            $stmtDelete->execute();
-            echo "Membre supprimé";
-        }
+        $idPedagogie = $_GET['deletePedagogie'];
+        $sqlDelete = "DELETE FROM pedagogie WHERE id_pedagogie = :idPedagogie";
+        $stmtDelete = $bdd->prepare($sqlDelete);
+        $stmtDelete->bindParam(':idPedagogie', $idPedagogie);
+        $stmtDelete->execute();
 
+        echo "Membre supprimé";
+
+    }
+    
     // Ajout de données avec bouton "ajouter"
     if (isset($_POST['submitPedagogie'])) {
-        $nomPedagogie = $_POST['nomPedagogie'];
-        $prenomPedagogie = $_POST['prenomPedagogie'];
-        $mailPedagogie = $_POST['mailPedagogie'];
-        $numPedagogie = $_POST['numPedagogie'];
-        $idRole = $_POST['idRole'];
+
         $sqlInsert = "INSERT INTO pedagogie (nom_pedagogie, prenom_pedagogie, mail_pedagogie, num_pedagogie, id_role) VALUES (:nomPedagogie, :prenomPedagogie, :mailPedagogie, :numPedagogie, :idRole)";
         $stmtInsert = $bdd->prepare($sqlInsert);
-        $stmtInsert->bindParam(':nomPedagogie', $nomPedagogie);
-        $stmtInsert->bindParam(':prenomPedagogie', $prenomPedagogie);
-        $stmtInsert->bindParam(':mailPedagogie', $mailPedagogie);
-        $stmtInsert->bindParam(':numPedagogie', $numPedagogie);
-        $stmtInsert->bindParam(':idRole', $idRole);
+
+        $stmtInsert->bindParam(':nomPedagogie', $_POST['nomPedagogie']);
+        $stmtInsert->bindParam(':prenomPedagogie', $_POST['prenomPedagogie']);
+        $stmtInsert->bindParam(':mailPedagogie', $_POST['mailPedagogie']);
+        $stmtInsert->bindParam(':numPedagogie', $_POST['numPedagogie']);
+        $stmtInsert->bindParam(':idRole', $_POST['idRole']);
         $stmtInsert->execute();
+
         echo "Membre d'équipe ajouté avec succès";
     }
     

@@ -1,8 +1,7 @@
 <?php
 
-    $sqlFormation = "SELECT * FROM formations";
-    $requeteFormation = $bdd->query($sqlFormation);
-    $resultsFormation = $requeteFormation->fetchAll(PDO::FETCH_ASSOC);
+    include("function.php");
+    $resultsFormation = selectAll("formations");
         
 ?>
 
@@ -82,18 +81,16 @@
 
     if (isset($_POST["updateFormation"])){
         //valider et changer les données dans la bdd avec le bouton "modifier"
-        $updateIdFormation = $_POST["updateIdFormation"];
-        $updateNomFormation = $_POST["updateNomFormation"];
-        $updateDureeFormation = $_POST["updateDureeFormation"];
-        $updateNiveauFormation = $_POST["updateNiveauFormation"];
+
         $updateDescriptionFormation = $_POST["updateDescriptionFormation"];
         $sqlUpdate = "UPDATE formations SET nom_formation = :nomFormation, duree_formation = :dureeFormation, niveau_sortie_formation = :niveauFormation, `description` = :descFormation  WHERE id_formation = :idFormation";
         $stmtUpdate = $bdd->prepare($sqlUpdate);
-        $stmtUpdate->bindParam(':nomFormation', $updateNomFormation);
-        $stmtUpdate->bindParam(':dureeFormation', $updateDureeFormation);
-        $stmtUpdate->bindParam(':niveauFormation', $updateNiveauFormation);
-        $stmtUpdate->bindParam(':descFormation', $updateDescriptionFormation);
-        $stmtUpdate->bindParam(':idFormation', $updateIdFormation);
+
+        $stmtUpdate->bindParam(':nomFormation', $_POST["updateNomFormation"]);
+        $stmtUpdate->bindParam(':dureeFormation', $_POST["updateDureeFormation"]);
+        $stmtUpdate->bindParam(':niveauFormation', $_POST["updateNiveauFormation"]);
+        $stmtUpdate->bindParam(':descFormation', $_POST["updateDescriptionFormation"]);
+        $stmtUpdate->bindParam(':idFormation', $_POST["updateIdFormation"]);
         $stmtUpdate->execute();
     
         echo "Données de formation mises à jour";
@@ -110,17 +107,16 @@
 
     //Ajout de données avec bouton "ajouter"
     if (isset($_POST['submitFormation'])){
-        $nomFormation = $_POST['nomFormation'];
-        $dureeFormation = $_POST['dureeFormation'];
-        $niveauFormation = $_POST['niveauFormation'];
-        $descFormation = $_POST['descFormation'];
+
         $sql = "INSERT INTO formations (nom_formation, duree_formation, niveau_sortie_formation, description) VALUES (:nomFormation, :dureeFormation, :niveauFormation, :descFormation)";
         $stmt = $bdd->prepare($sql);
-        $stmt->bindParam(':nomFormation', $nomFormation);
-        $stmt->bindParam(':dureeFormation', $dureeFormation);
-        $stmt->bindParam(':niveauFormation', $niveauFormation);
-        $stmt->bindParam(':descFormation', $descFormation);
+
+        $stmt->bindParam(':nomFormation', $_POST['nomFormation']);
+        $stmt->bindParam(':dureeFormation', $_POST['dureeFormation']);
+        $stmt->bindParam(':niveauFormation', $_POST['niveauFormation']);
+        $stmt->bindParam(':descFormation', $_POST['descFormation']);
         $stmt->execute();
+        
         echo "Formation ajoutée dans la BDD";
     }
     

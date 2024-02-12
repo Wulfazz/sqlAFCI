@@ -2,8 +2,9 @@
 
 function selectAll($table) {
 
+    include 'db.php';
     $sql = "SELECT * FROM $table";
-    $table = $bdd->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    return $bdd->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
 }
 

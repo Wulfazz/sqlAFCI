@@ -1,8 +1,7 @@
 <?php
 
-    $sqlCentre = "SELECT * FROM centres";
-    $requeteCentre = $bdd->query($sqlCentre);
-    $resultsCentre = $requeteCentre->fetchAll(PDO::FETCH_ASSOC);
+    include("function.php");
+    $centres = selectAll("centres");
 
 ?>
 
@@ -37,13 +36,13 @@
 
         <?php
         //Données dans le tableau
-        foreach($resultsCentre as $centres){
+        foreach($centres as $centre){
             echo '<tr>';
-            echo '<td>' . htmlspecialchars($centres['ville_centre']) . '</td>';
-            echo '<td>' . htmlspecialchars($centres['adresse_centre']) . '</td>';
-            echo '<td>' . htmlspecialchars($centres['code_postal_centre']) . '</td>';
-            echo '<td><a href="?page=centre&type=modifier&id=' . htmlspecialchars($centres['id_centre']) . '"><button>Modifier</button></a></td>';
-            echo '<td><a href="?page=centre&deleteCentre=' . htmlspecialchars($centres['id_centre']) . '" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce centre ?\');"><button>Supprimer</button></a></td>';
+            echo '<td>' . htmlspecialchars($centre['ville_centre']) . '</td>';
+            echo '<td>' . htmlspecialchars($centre['adresse_centre']) . '</td>';
+            echo '<td>' . htmlspecialchars($centre['code_postal_centre']) . '</td>';
+            echo '<td><a href="?page=centre&type=modifier&id=' . htmlspecialchars($centre['id_centre']) . '"><button>Modifier</button></a></td>';
+            echo '<td><a href="?page=centre&deleteCentre=' . htmlspecialchars($centre['id_centre']) . '" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce centre ?\');"><button>Supprimer</button></a></td>';
             echo '</tr>';
         }
         ?>
@@ -77,18 +76,14 @@
     
     if (isset($_POST["updateCentre"])) {
         //valider et changer les données dans la bdd avec le bouton "modifier"
-        $updateIdCentre = $_POST["updateIdCentre"];
-        $updateVilleCentre = $_POST["updateVilleCentre"];
-        $updateAdresseCentre = $_POST["updateAdresseCentre"];
-        $updateCpCentre = $_POST["updateCpCentre"];
     
         $sqlUpdate = "UPDATE centres SET ville_centre = :villeCentre, adresse_centre = :adresseCentre, code_postal_centre = :cpCentre WHERE id_centre = :idCentre";
         $stmtUpdate = $bdd->prepare($sqlUpdate);
         
-        $stmtUpdate->bindParam(':villeCentre', $updateVilleCentre);
-        $stmtUpdate->bindParam(':adresseCentre', $updateAdresseCentre);
-        $stmtUpdate->bindParam(':cpCentre', $updateCpCentre);
-        $stmtUpdate->bindParam(':idCentre', $updateIdCentre);
+        $stmtUpdate->bindParam(':villeCentre', $_POST["updateVilleCentre"]);
+        $stmtUpdate->bindParam(':adresseCentre', $_POST["updateAdresseCentre"]);
+        $stmtUpdate->bindParam(':cpCentre', $_POST["updateCpCentre"]);
+        $stmtUpdate->bindParam(':idCentre', $_POST["updateIdCentre"]);
         $stmtUpdate->execute();
     
         echo "Données modifiées";
@@ -105,16 +100,14 @@
 
     //Ajout de données avec bouton "ajouter"
     if (isset($_POST['submitCentre'])){
-        $villeCentre = $_POST['villeCentre'];
-        $adresseCentre = $_POST['adresseCentre'];
-        $cpCentre = $_POST['cpCentre'];
+
         $sql = "INSERT INTO `centres`(`ville_centre`, `adresse_centre`, `code_postal_centre`) 
         VALUES (:villeCentre, :adresseCentre, :cpCentre)";
         $stmt = $bdd->prepare($sql);
 
-        $stmt->bindParam(':villeCentre', $villeCentre);
-        $stmt->bindParam(':adresseCentre', $adresseCentre);
-        $stmt->bindParam(':cpCentre', $cpCentre);
+        $stmt->bindParam(':villeCentre', $_POST['villeCentre']);
+        $stmt->bindParam(':adresseCentre', $_POST['adresseCentre']);
+        $stmt->bindParam(':cpCentre', $_POST['cpCentre']);
         $stmt->execute();
         echo "Centre ajouté dans la bdd";
     }

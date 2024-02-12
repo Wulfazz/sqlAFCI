@@ -1,7 +1,7 @@
 <?php
 
-    $sqlRoles = "SELECT * FROM role";
-    $roles = $bdd->query($sqlRoles)->fetchAll(PDO::FETCH_ASSOC);
+    include("function.php");
+    $roles = selectAll("role");
         
 ?>
 
@@ -69,15 +69,12 @@
     }
 
     if (isset($_POST["updateRole"])) {
-        // Valider et changer les données dans la base de données avec le bouton "modifier"
-        $idRole = $_POST["idRole"];
-        $nomRole = $_POST["nomRole"];
 
         // Mettez à jour la base de données
         $sqlUpdateRole = "UPDATE role SET nom_role = :nomRole WHERE id_role = :idRole";
-        $stmtUpdateRole = $bdd->prepare($sqlUpdateRole);
-        $stmtUpdateRole->bindParam(':nomRole', $nomRole);
-        $stmtUpdateRole->bindParam(':idRole', $idRole);
+        $stmtUpdateRole = $bdd->prepare($_POST["sqlUpdateRole"]);
+        $stmtUpdateRole->bindParam(':nomRole', $_POST["nomRole"]);
+        $stmtUpdateRole->bindParam(':idRole', $_POST["idRole"]);
         $stmtUpdateRole->execute();
 
         echo "Nom du poste modifié";
@@ -94,12 +91,11 @@
     
     // Ajout de données avec bouton "Ajouter"
     if (isset($_POST['submitRole'])) {
-        $nomRole = $_POST['nomRole'];
     
         $sql = "INSERT INTO role (nom_role) 
         VALUES (:nomRole)";
         $stmt = $bdd->prepare($sql);
-        $stmtInsertRole->bindParam(':nomRole', $nomRole);
+        $stmtInsertRole->bindParam(':nomRole', $_POST['nomRole']);
         $stmtInsertRole->execute();
     
         echo "Role ajouté dans la BDD";

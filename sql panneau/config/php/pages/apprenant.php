@@ -1,11 +1,9 @@
 <?php
 
     // Récupération des informations pour les menus déroulants
-    $sqlRoles = "SELECT * FROM role";
-    $roles = $bdd->query($sqlRoles)->fetchAll(PDO::FETCH_ASSOC);
-
-    $sqlSessions = "SELECT * FROM session";
-    $sessions = $bdd->query($sqlSessions)->fetchAll(PDO::FETCH_ASSOC);
+    include("function.php");
+    $roles = selectAll("role");
+    $sessions = selectAll("session");
 
     // Récupération de la liste des apprenants pour affichage
     $sqlApprenants = "SELECT app.*, r.nom_role, s.date_debut 
@@ -162,26 +160,17 @@
     }
 
     if (isset($_POST['updateApprenant'])) {
-        // Récupérez les valeurs depuis le formulaire
-        $idApprenant = $_POST['idApprenant'];
-        $nomApprenant = $_POST['nomApprenant'];
-        $prenomApprenant = $_POST['prenomApprenant'];
-        $mailApprenant = $_POST['mailApprenant'];
-        $adresseApprenant = $_POST['adresseApprenant'];
-        $villeApprenant = $_POST['villeApprenant'];
-        $cpApprenant = $_POST['cpApprenant'];
-        $numApprenant = $_POST['numApprenant'];
         // Mettez à jour la base de données
         $sqlUpdateApprenant = "UPDATE apprenants SET nom_apprenant = :nomApprenant, prenom_apprenant = :prenomApprenant, mail_apprenant = :mailApprenant, adresse_apprenant = :adresseApprenant, ville_apprenant = :villeApprenant, code_postal_apprenant = :cpApprenant, tel_apprenant = :numApprenant WHERE id_apprenant = :idApprenant";
         $stmtUpdateApprenant = $bdd->prepare($sqlUpdateApprenant);
-        $stmtUpdateApprenant->bindParam(':nomApprenant', $nomApprenant);
-        $stmtUpdateApprenant->bindParam(':prenomApprenant', $prenomApprenant);
-        $stmtUpdateApprenant->bindParam(':mailApprenant', $mailApprenant);
-        $stmtUpdateApprenant->bindParam(':adresseApprenant', $adresseApprenant);
-        $stmtUpdateApprenant->bindParam(':villeApprenant', $villeApprenant);
-        $stmtUpdateApprenant->bindParam(':cpApprenant', $cpApprenant);
-        $stmtUpdateApprenant->bindParam(':numApprenant', $numApprenant);
-        $stmtUpdateApprenant->bindParam(':idApprenant', $idApprenant);
+        $stmtUpdateApprenant->bindParam(':nomApprenant', $_POST['nomApprenant']);
+        $stmtUpdateApprenant->bindParam(':prenomApprenant', $_POST['prenomApprenant']);
+        $stmtUpdateApprenant->bindParam(':mailApprenant', $_POST['mailApprenant']);
+        $stmtUpdateApprenant->bindParam(':adresseApprenant', $_POST['adresseApprenant']);
+        $stmtUpdateApprenant->bindParam(':villeApprenant', $_POST['villeApprenant']);
+        $stmtUpdateApprenant->bindParam(':cpApprenant', $_POST['cpApprenant']);
+        $stmtUpdateApprenant->bindParam(':numApprenant', $_POST['numApprenant']);
+        $stmtUpdateApprenant->bindParam(':idApprenant', $_POST['idApprenant']);
         $stmtUpdateApprenant->execute();
     
         echo "Informations de l'apprenant mises à jour avec succès.";
@@ -199,29 +188,27 @@
     
     // Traitement de l'ajout d'un apprenant
     if (isset($_POST['submitApprenant'])) {
-        $nomApprenant = $_POST['nomApprenant'];
-        $prenomApprenant = $_POST['prenomApprenant'];
-        $mailApprenant = $_POST['mailApprenant'];
-        $idRole = $_POST['idRoleAp'];
-        $idSession = $_POST['idSession'];
+
         $sqlInsert = "INSERT INTO apprenants (nom_apprenant, prenom_apprenant, mail_apprenant, adresse_apprenant, ville_apprenant, code_postal_apprenant, tel_apprenant, date_naissance_apprenant, niveau_apprenant, num_PE_apprenant, num_secu_apprenant, rib_apprenant, id_role, id_session) 
-                    VALUES (:nomApprenant, :prenomApprenant, :mailApprenant, :adresseApprenant, :villeApprenant, :cpApprenant, :telApprenant, :naissanceApprenant, :nivApprenant, :peApprenant, :secuApprenant, :ribApprenant, :idRole, :idSession)";
+        VALUES (:nomApprenant, :prenomApprenant, :mailApprenant, :adresseApprenant, :villeApprenant, :cpApprenant, :telApprenant, :naissanceApprenant, :nivApprenant, :peApprenant, :secuApprenant, :ribApprenant, :idRole, :idSession )";
+
         $stmtInsert = $bdd->prepare($sqlInsert);
-        $stmtInsert->bindParam(':nomApprenant', $nomApprenant);
-        $stmtInsert->bindParam(':prenomApprenant', $prenomApprenant);
-        $stmtInsert->bindParam(':mailApprenant', $mailApprenant);
-        $stmtInsert->bindParam(':adresseApprenant', $adresseApprenant);
-        $stmtInsert->bindParam(':villeApprenant', $villeApprenant);
-        $stmtInsert->bindParam(':cpApprenant', $cpApprenant);
-        $stmtInsert->bindParam(':telApprenant', $telApprenant);
-        $stmtInsert->bindParam(':naissanceApprenant', $naissanceApprenant);
-        $stmtInsert->bindParam(':nivApprenant', $nivApprenant);
-        $stmtInsert->bindParam(':peApprenant', $peApprenant);
-        $stmtInsert->bindParam(':secuApprenant', $secuApprenant);
-        $stmtInsert->bindParam(':ribApprenant', $ribApprenant);
-        $stmtInsert->bindParam(':idRole', $idRoleAp);
-        $stmtInsert->bindParam(':idSession', $idSession);
+        $stmtInsert->bindParam(':nomApprenant', $_POST['nomApprenant']);
+        $stmtInsert->bindParam(':prenomApprenant', $_POST['prenomApprenant']);
+        $stmtInsert->bindParam(':mailApprenant', $_POST['mailApprenant']);
+        $stmtInsert->bindParam(':adresseApprenant', $_POST['adresseApprenant']);
+        $stmtInsert->bindParam(':villeApprenant', $_POST['villeApprenant']);
+        $stmtInsert->bindParam(':cpApprenant', $_POST['cpApprenant']);
+        $stmtInsert->bindParam(':telApprenant', $_POST['telApprenant']);
+        $stmtInsert->bindParam(':naissanceApprenant', $_POST['naissanceApprenant']);
+        $stmtInsert->bindParam(':nivApprenant', $_POST['nivApprenant']);
+        $stmtInsert->bindParam(':peApprenant', $_POST['peApprenant']);
+        $stmtInsert->bindParam(':secuApprenant', $_POST['secuApprenant']);
+        $stmtInsert->bindParam(':ribApprenant', $_POST['ribApprenant']);
+        $stmtInsert->bindParam(':idRole', $_POST['idRoleAp']);
+        $stmtInsert->bindParam(':idSession', $_POST['idSession']);
         $stmtInsert->execute();
+
         echo "Apprenant ajouté avec succès";
     }
 ?>
