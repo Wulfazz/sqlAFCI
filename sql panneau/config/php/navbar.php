@@ -10,7 +10,8 @@
             <li><a href="?page=apprenant">Apprenant</li></a>
             <li><a href="?page=affecter">Affectation</a></li>
             <li><a href="?page=login">Connexion</a></li>
-            <li><a href="?exo=poo"></a>Exo</li>
+            <li><a href="?exo=poo">Exo</a></li>
+            <li><a href="?exo=5vs5">Tour par tour</a></li>
         </ul>
     </nav>
 </header>

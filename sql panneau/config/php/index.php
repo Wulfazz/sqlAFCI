@@ -21,11 +21,12 @@
             include "pages/$page.php";
         }
 
+        if (isset($_GET['exo'])){
+            $exo = $_GET['exo'];
+            include "exo/$exo.php";
+        }
         ?>
 
-        <?php
-        include 'exo/poo.php';
-        ?>
 
     <!-- footer -->
     <?php
